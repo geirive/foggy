@@ -1,30 +1,43 @@
-/* FILEPATH: /home/geirive/proj_wsl/personal/trystuff/foggy/css/style.css */
-
 body {
-    margin: 0;
-    padding: 0;
-    background: url("../img/forest.jpg") no-repeat center center fixed;
-    background-size: cover;
+  margin: 0;
+  padding: 0;
+  background: url("../img/forest.jpg") no-repeat center center fixed;
+  background-size: cover;
 }
 
 .foggy {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    filter: blur(5px);
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-    background-color: whitesmoke;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  filter: blur(5px);
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  background-color: whitesmoke;
 }
 
-.white_sheet {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: thistle;
-    background: radial-gradient(circle at center, transparent 20%, whitesmoke 30.1%);
+.whiteSheet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: thistle;
+  background: radial-gradient(
+    circle at center,
+    transparent 0px,
+    whitesmoke 0px
+  );
+}
+
+#joke {
+  position: absolute;
+  width: 25vw;
+}
+
+#jokeLink {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: whitesmoke;
 }
