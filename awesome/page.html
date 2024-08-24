@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to My Awesome Page!</title>
+    <style>
+        body {
+            background-image: url('img/MOVINGSTARS.gif');
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            color: #FF00FF;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-size: 36px;
+            text-shadow: 2px 2px #FFFF00;
+        }
+        .construction {
+            margin: 20px 0;
+        }
+        .counter {
+            background-color: #000000;
+            color: #00FF00;
+            display: inline-block;
+            padding: 5px;
+            font-family: "Courier New", monospace;
+        }
+        .guestbook {
+            margin-top: 20px;
+        }
+        .webring {
+            margin-top: 20px;
+        }
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to My Awesome Page!</h1>
+    
+    <div class="construction">
+        <img src="img/thconstruction.gif" alt="Under Construction">
+        <p class="blink">This page is under construction!</p>
+    </div>
+    
+    <img src="img/3dhomer.gif" alt="3d Homer">
+    <img src="img/sun.gif" alt="Don't worry - be happy :)">
+    <img src="img/dancingbaby.gif" alt="Dancing Baby">
+    <p>You are visitor number:</p>
+    <div class="counter">000001</div>
+
+    <div class="guestbook">
+        <a href="#">Sign my guestbook!</a>
+    </div>
+
+    <p>
+        <a href="mailto:noreply@example.com"><img src="img/3DEmail.gif" alt="Send email!!"></a>
+    </p>
+
+    <marquee>Thanks for visiting my page! Come back soon!</marquee>
+
+    <p>
+        <a href="../index.html"><img src="img/geo_home.gif"></a>
+        <br/>
+        <a href="../index.html">Back to the future</a>
+    </p>
+</body>
+</html>

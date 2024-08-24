@@ -24,6 +24,11 @@ a {
 a:hover {
   color: #1a1a1a;
 }
+.link-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
 .page-link {
   font-size: 1.5rem;
   color: #006400;
