@@ -56,12 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
     element.style.top = `${randomY}px`;
   }
 
-  // Initial fetch and position
+  // Initial fetch, position, and animation
   fetchJoke();
+  initialAnimation();
 });
 
-let innerRadiusPercentage = 25;
-let outerRadiusPercentage = 40;
+let innerRadiusPercentage = 5;  // Start with a smaller inner radius
+let outerRadiusPercentage = 10; // Start with a smaller outer radius
 
 function handleMouseMove(e) {
   const { clientX: x, clientY: y } = e;
@@ -114,4 +115,25 @@ function updateRadiusPercentage(scaleFactor) {
 
 function circularFogHole(x, y) {
   whiteSheet.style.background = `radial-gradient(circle at ${x}px ${y}px, transparent ${innerRadiusPercentage}vh, whitesmoke ${outerRadiusPercentage}vh`;
+}
+
+function initialAnimation() {
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
+  
+  const INNER_RADIUS_INCREMENT = 0.5;
+  const OUTER_RADIUS_INCREMENT = 0.75;
+  const MAX_OUTER_RADIUS = 35;
+  const ANIMATION_INTERVAL = 13; // milliseconds
+
+  const animationInterval = setInterval(() => {
+    innerRadiusPercentage += INNER_RADIUS_INCREMENT;
+    outerRadiusPercentage += OUTER_RADIUS_INCREMENT;
+    
+    circularFogHole(centerX, centerY);
+    
+    if (outerRadiusPercentage >= MAX_OUTER_RADIUS) {
+      clearInterval(animationInterval);
+    }
+  }, ANIMATION_INTERVAL);
 }
