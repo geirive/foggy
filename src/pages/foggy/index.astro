@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Foggy Forest">
+  <div class="whiteSheet"></div>
+  <div class="foggy"></div>
+  <div id="joke"></div>
+  <script src="/foggy/script.js" is:inline></script>
+</Base>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: url("/foggy/img/forest.jpg") no-repeat center center fixed;
+    background-size: cover;
+  }
+  .foggy {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    filter: blur(5px);
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    background-color: whitesmoke;
+  }
+  .whiteSheet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, transparent 0px, whitesmoke 0px);
+  }
+  #joke {
+    position: absolute;
+    width: 25vw;
+  }
+  #jokeLink {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: whitesmoke;
+  }
+</style>

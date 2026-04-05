@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Groot">
+  <main>
+    <h1>Welcome</h1>
+    <nav>
+      <ul>
+        <li><a href="/foggy/">Enter the forest</a></li>
+        <li>
+          <a href="https://www.cameronsworld.net/" target="_blank" rel="noopener noreferrer">
+            Visit an awesome page
+          </a>
+        </li>
+        <li><a href="/blog/">Notes to self</a></li>
+      </ul>
+    </nav>
+  </main>
+</Base>
+
+<style>
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    padding: 0 6rem;
+    gap: 4rem;
+  }
+  h1 {
+    font-size: 4rem;
+    color: var(--primary);
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+    margin: 0;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  a {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: var(--primary-container);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 500ms ease-out, letter-spacing 500ms ease-out;
+  }
+  a:hover {
+    color: var(--primary);
+    letter-spacing: 0.05em;
+  }
+  @media (max-width: 640px) {
+    main {
+      grid-template-columns: 1fr;
+      padding: 4rem 2.5rem;
+      gap: 3rem;
+    }
+  }
+</style>
