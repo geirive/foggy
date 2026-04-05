@@ -1,0 +1,42 @@
+<!-- Save this as src/components/HeroFog.astro -->
+<div
+  class="relative w-full h-[400px] overflow-hidden bg-slate-100 flex items-center justify-center rounded-xl">
+
+  <!-- Animated Fog Layers -->
+  <div class="absolute inset-0 bg-white/40 blur-3xl animate-pulse delay-75 translate-y-10 scale-150"></div>
+  <div class="absolute inset-0 bg-white/20 blur-2xl animate-bounce duration-[10s] -translate-x-20"></div>
+
+  <!-- Silhouette Container -->
+  <div class="relative flex flex-col items-center group">
+
+    <!-- The "Someone" Silhouette -->
+    <div
+      class="w-16 h-16 bg-slate-800/20 rounded-full blur-sm group-hover:bg-slate-800/40 transition-colors duration-1000">
+    </div>
+    <div
+      class="w-32 h-48 bg-slate-800/20 rounded-t-full blur-md -mt-4 group-hover:bg-slate-800/40 transition-colors duration-1000">
+    </div>
+
+    <!-- The Text -->
+    <h1
+      class="absolute bottom-[-20px] text-5xl font-black text-slate-700/80 tracking-tighter drop-shadow-sm transition-all duration-700 group-hover:scale-110 group-hover:text-slate-900">
+      HELLO WORLD
+    </h1>
+  </div>
+
+  <!-- Extra Ground Fog -->
+  <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-white/80 to-transparent"></div>
+</div>
+
+<style>
+  /* Optional: Custom slow drift if not using standard Tailwind config */
+  @keyframes drift {
+    0% {
+      transform: translateX(-10%);
+    }
+
+    100% {
+      transform: translateX(10%);
+    }
+  }
+</style>

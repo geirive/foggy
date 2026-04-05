@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  /* Surface hierarchy */
+  --surface: #f7faf7;
+  --surface-dim: #d8dbd8;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f1f4f1;
+  --surface-container: #ecefeb;
+  --surface-container-high: #e6e9e6;
+  --surface-container-highest: #dde0dd;
+
+  /* Primary */
+  --primary: #173838;
+  --primary-container: #2f4f4f;
+
+  /* Text */
+  --on-surface: #181c1b;
+  --on-surface-variant: #4a5450;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Manrope", Arial, sans-serif;
+  font-weight: 400;
+  background-color: var(--surface);
+  color: var(--on-surface);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Noto Serif", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
