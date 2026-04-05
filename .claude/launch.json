@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Astro Dev",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "PATH=/Users/geirive/.volta/bin:$PATH npm run dev"],
+      "port": 4321
+    },
+    {
+      "name": "Astro Preview",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "PATH=/Users/geirive/.volta/bin:$PATH npm run preview"],
+      "port": 4321
+    }
+  ]
+}
