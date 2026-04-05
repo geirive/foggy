@@ -1,0 +1,106 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<Base title={post.data.title}>
+  <main>
+    <nav>
+      <a href="/blog/" class="back">← notes</a>
+    </nav>
+    <article>
+      <header>
+        <time>{post.data.date.toISOString().slice(0, 10)}</time>
+        <h1>{post.data.title}</h1>
+      </header>
+      <div class="content">
+        <Content />
+      </div>
+    </article>
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 4rem 2rem 8rem;
+  }
+  nav {
+    margin-bottom: 5rem;
+  }
+  .back {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 500ms ease-out;
+  }
+  .back:hover {
+    color: var(--primary);
+  }
+  time {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-size: 3rem;
+    color: var(--primary);
+    line-height: 1.15;
+    margin: 0 0 3.5rem;
+    letter-spacing: 0.02em;
+  }
+  .content {
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--on-surface);
+  }
+  .content :global(p) {
+    margin: 1.5rem 0;
+  }
+  .content :global(a) {
+    color: var(--primary-container);
+    transition: color 500ms ease-out;
+  }
+  .content :global(a:hover) {
+    color: var(--primary);
+  }
+  .content :global(h2) {
+    font-size: 1.75rem;
+    color: var(--primary);
+    letter-spacing: 0.02em;
+    margin-top: 3rem;
+    font-weight: 400;
+  }
+  .content :global(h3) {
+    font-size: 1.25rem;
+    color: var(--primary-container);
+    letter-spacing: 0.02em;
+    margin-top: 2.5rem;
+    font-weight: 400;
+  }
+  .content :global(img) {
+    max-width: 100%;
+    border-radius: 2rem;
+    display: block;
+    margin: 2.5rem 0;
+  }
+</style>

@@ -1,0 +1,112 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+<Base title="Notes to self">
+  <main>
+    <aside>
+      <a href="/" class="back">← back</a>
+      <h1>Notes<br />to self</h1>
+    </aside>
+    <section>
+      {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
+      <ul>
+        {posts.map((post) => (
+          <li>
+            <time>{post.data.date.toISOString().slice(0, 10)}</time>
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</Base>
+
+<style>
+  main {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    min-height: 100vh;
+    width: 100%;
+  }
+  aside {
+    background-color: var(--surface-container-low);
+    padding: 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .back {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 500ms ease-out;
+  }
+  .back:hover {
+    color: var(--primary);
+  }
+  h1 {
+    font-size: 3.5rem;
+    color: var(--primary);
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: 0.04em;
+  }
+  section {
+    padding: 6rem 5rem 4rem 4rem;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 2rem 0;
+  }
+  li:not(:first-child) {
+    border-top: none;
+    padding-top: 2.5rem;
+  }
+  time {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  a {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--primary-container);
+    text-decoration: none;
+    transition: color 500ms ease-out;
+  }
+  a:hover {
+    color: var(--primary);
+  }
+  .empty {
+    color: var(--on-surface-variant);
+    font-weight: 300;
+  }
+  @media (max-width: 700px) {
+    main {
+      grid-template-columns: 1fr;
+    }
+    aside {
+      padding: 3rem 2rem 2rem;
+      gap: 2rem;
+    }
+    section {
+      padding: 3rem 2rem;
+    }
+  }
+</style>
