@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Samtalehjelp</title>
+<style>
+  :root{
+    --paper:#FCFBF8;
+    --ink:#141210;
+    --ink-soft:#54504A;
+    --rule:#CFC9BE;
+    --blue:#12457F;
+    --blue-deep:#0B2E56;
+    --rust:#A32A16;
+    --moss:#1F5B32;
+    --sun:#E8C33A;
+    --tap:88px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;margin:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:20px;
+    line-height:1.35;
+    -webkit-user-select:none;user-select:none;
+    overflow:hidden;
+  }
+  #app{display:flex;height:100%;height:100dvh}
+
+  /* ---- mode rail ---- */
+  nav{
+    flex:0 0 168px;
+    border-right:3px solid var(--ink);
+    display:flex;flex-direction:column;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  nav button{
+    flex:1;
+    border:0;border-bottom:2px solid var(--rule);
+    background:transparent;color:var(--ink-soft);
+    font:inherit;font-weight:600;font-size:21px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    cursor:pointer;padding:8px;
+  }
+  nav button:last-child{border-bottom:0}
+  nav button .gl{font-size:34px;line-height:1}
+  nav button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+  nav button:focus-visible{outline:4px solid var(--sun);outline-offset:-6px}
+
+  main{flex:1;min-width:0;position:relative}
+  section{
+    position:absolute;inset:0;
+    padding:22px 26px calc(22px + env(safe-area-inset-bottom));
+    display:none;flex-direction:column;gap:16px;
+  }
+  section[data-open]{display:flex}
+
+  h2{margin:0;font-size:22px;font-weight:600;color:var(--ink-soft)}
+
+  .bigbtn{
+    border:3px solid var(--ink);border-radius:14px;
+    background:var(--paper);color:var(--ink);
+    font:inherit;font-weight:700;
+    min-height:var(--tap);
+    cursor:pointer;
+  }
+  .bigbtn:active{transform:translateY(2px)}
+  .bigbtn:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
+  .bigbtn[disabled]{opacity:.32}
+
+  /* ---- LYTT ---- */
+  #lytt{align-items:center;justify-content:center;gap:22px}
+  .recwrap{position:relative;width:246px;height:246px;flex:0 0 auto}
+  #ring{position:absolute;inset:0;transform:rotate(-90deg)}
+  #ring circle{fill:none;stroke-width:10}
+  #ringBg{stroke:var(--rule)}
+  #ringLvl{stroke:var(--rust);stroke-linecap:round;transition:stroke-dashoffset .07s linear}
+  #rec{
+    position:absolute;inset:22px;border-radius:50%;
+    border:4px solid var(--ink);background:var(--paper);
+    font:inherit;font-weight:700;font-size:26px;color:var(--ink);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    cursor:pointer;
+  }
+  #rec[data-on]{background:var(--rust);border-color:var(--rust);color:#fff}
+  #rec small{font-size:17px;font-weight:600;opacity:.75}
+
+  #play{
+    width:100%;max-width:620px;
+    font-size:34px;background:var(--blue);color:#fff;border-color:var(--blue-deep);
+    min-height:104px;
+  }
+  .knobs{width:100%;max-width:620px;display:flex;flex-direction:column;gap:14px}
+  .knob{display:flex;align-items:center;gap:14px}
+  .knob span{flex:0 0 132px;font-size:19px;font-weight:600;color:var(--ink-soft)}
+  .knob input[type=range]{flex:1;height:48px;accent-color:var(--blue)}
+  .seg{flex:1;display:flex;gap:8px}
+  .seg button{
+    flex:1;min-height:60px;font-size:20px;
+    border:3px solid var(--rule);border-radius:12px;background:transparent;
+    font-family:inherit;font-weight:700;color:var(--ink-soft);cursor:pointer;
+  }
+  .seg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .hint{font-size:18px;color:var(--ink-soft);text-align:center;max-width:620px}
+
+  /* ---- SKRIV ---- */
+  #skrivBox{
+    flex:1;width:100%;border:3px solid var(--ink);border-radius:14px;
+    padding:18px 22px;font-family:inherit;font-weight:700;
+    font-size:62px;line-height:1.15;color:var(--ink);background:#fff;
+    resize:none;-webkit-user-select:text;user-select:text;
+  }
+  #skrivBox:focus{outline:4px solid var(--blue);outline-offset:2px}
+  .answers{display:flex;gap:14px}
+  .answers button{flex:1;font-size:34px;min-height:110px;color:#fff}
+  #ja{background:var(--moss);border-color:#123A20}
+  #nesten{background:var(--sun);border-color:#8A7314;color:var(--ink)}
+  #nei{background:var(--rust);border-color:#6E1B0E}
+  .answers button[data-lit]{box-shadow:inset 0 0 0 8px rgba(255,255,255,.85)}
+
+  /* ---- BOKSTAVER ---- */
+  #ordfelt{
+    border:3px solid var(--ink);border-radius:14px;background:#fff;
+    padding:12px 18px;min-height:104px;
+    font-size:56px;font-weight:700;letter-spacing:.06em;
+    display:flex;align-items:center;overflow:hidden;
+  }
+  #ordfelt:empty::before{content:"Pek på bokstavene";color:#B8B2A6;letter-spacing:0}
+  .grid{
+    flex:1;display:grid;grid-template-columns:repeat(8,1fr);gap:8px;min-height:0;
+  }
+  .grid button{
+    border:3px solid var(--rule);border-radius:12px;background:transparent;
+    font-family:inherit;font-weight:700;font-size:clamp(22px,3.4vh,40px);color:var(--ink);
+    cursor:pointer;
+  }
+  .grid button:active{background:var(--ink);color:var(--paper)}
+  .grid button.util{border-color:var(--ink);font-size:clamp(16px,2.2vh,22px)}
+
+  /* ---- ORD ---- */
+  .cats{display:flex;gap:8px;flex-wrap:wrap}
+  .cats button{
+    padding:0 20px;min-height:66px;font-size:21px;
+    border:3px solid var(--rule);border-radius:999px;background:transparent;
+    font-family:inherit;font-weight:700;color:var(--ink-soft);cursor:pointer;
+  }
+  .cats button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  #ordgrid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;min-height:0}
+  #ordgrid button{
+    border:3px solid var(--ink);border-radius:14px;background:#fff;
+    font-family:inherit;font-weight:700;font-size:clamp(24px,3.6vh,40px);color:var(--ink);cursor:pointer;
+  }
+  #ordgrid button:active{background:var(--ink);color:var(--paper)}
+
+  #stor{
+    position:fixed;inset:0;background:var(--paper);z-index:50;
+    display:none;align-items:center;justify-content:center;padding:40px;
+    font-weight:700;font-size:clamp(60px,16vh,190px);text-align:center;line-height:1.05;
+    cursor:pointer;
+  }
+  #stor[data-open]{display:flex}
+
+  @media (max-width:820px), (orientation:portrait){
+    #app{flex-direction:column-reverse}
+    nav{flex:0 0 96px;flex-direction:row;border-right:0;border-top:3px solid var(--ink)}
+    nav button{border-bottom:0;border-right:2px solid var(--rule);font-size:16px;gap:2px}
+    nav button .gl{font-size:26px}
+    .recwrap{width:190px;height:190px}
+    #skrivBox{font-size:44px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <nav role="tablist">
+    <button role="tab" data-go="lytt" aria-selected="true"><span class="gl">🎙</span>Hør igjen</button>
+    <button role="tab" data-go="skriv" aria-selected="false"><span class="gl">✍️</span>Skriv</button>
+    <button role="tab" data-go="bokstaver" aria-selected="false"><span class="gl">A B C</span>Stave</button>
+    <button role="tab" data-go="ord" aria-selected="false"><span class="gl">▦</span>Ord</button>
+  </nav>
+
+  <main>
+    <!-- LYTT -->
+    <section id="lytt" data-open>
+      <div class="recwrap">
+        <svg id="ring" viewBox="0 0 246 246" aria-hidden="true">
+          <circle id="ringBg" cx="123" cy="123" r="118"></circle>
+          <circle id="ringLvl" cx="123" cy="123" r="118" stroke-dasharray="741" stroke-dashoffset="741"></circle>
+        </svg>
+        <button id="rec">Ta opp<small id="recSub">trykk når han snakker</small></button>
+      </div>
+
+      <button id="play" class="bigbtn" disabled>Spill av</button>
+
+      <div class="knobs">
+        <div class="knob">
+          <span>Styrke</span>
+          <input id="gain" type="range" min="1" max="12" step="0.5" value="5" aria-label="Lydstyrke">
+        </div>
+        <div class="knob">
+          <span>Hastighet</span>
+          <div class="seg" id="speed">
+            <button data-r="0.6">Sakte</button>
+            <button data-r="0.8" aria-pressed="true">Rolig</button>
+            <button data-r="1">Vanlig</button>
+          </div>
+        </div>
+      </div>
+      <p class="hint" id="hint">Bruk øretelefoner om du har det — da kan du skru styrken helt opp uten at det piper.</p>
+    </section>
+
+    <!-- SKRIV -->
+    <section id="skriv">
+      <h2>Skriv det du tror han sa, og vis ham skjermen</h2>
+      <textarea id="skrivBox" placeholder="Mente du …" autocapitalize="sentences" autocorrect="on"></textarea>
+      <div class="answers">
+        <button class="bigbtn" id="ja">JA</button>
+        <button class="bigbtn" id="nesten">NESTEN</button>
+        <button class="bigbtn" id="nei">NEI</button>
+      </div>
+    </section>
+
+    <!-- BOKSTAVER -->
+    <section id="bokstaver">
+      <div id="ordfelt" aria-live="polite"></div>
+      <div class="grid" id="alfabet"></div>
+    </section>
+
+    <!-- ORD -->
+    <section id="ord">
+      <div class="cats" id="kategorier"></div>
+      <div id="ordgrid"></div>
+    </section>
+  </main>
+</div>
+
+<div id="stor" role="button" tabindex="0"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- navigasjon ---------- */
+  var tabs = document.querySelectorAll('nav button');
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      tabs.forEach(function(o){ o.setAttribute('aria-selected', String(o===t)); });
+      document.querySelectorAll('main section').forEach(function(s){ s.removeAttribute('data-open'); });
+      document.getElementById(t.dataset.go).setAttribute('data-open','');
+    });
+  });
+
+  /* ---------- stor visning ---------- */
+  var stor = document.getElementById('stor');
+  function visStort(txt){
+    if(!txt) return;
+    stor.textContent = txt;
+    stor.setAttribute('data-open','');
+  }
+  stor.addEventListener('click', function(){ stor.removeAttribute('data-open'); });
+  stor.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' ') stor.removeAttribute('data-open'); });
+
+  /* ---------- lyd ---------- */
+  var ctx=null, media=null, chain=null, srcNode=null;
+  var audioEl = new Audio();
+  audioEl.preload='auto';
+
+  function ensureCtx(){
+    if(!ctx){ ctx = new (window.AudioContext||window.webkitAudioContext)(); }
+    if(ctx.state==='suspended') ctx.resume();
+    return ctx;
+  }
+
+  function buildChain(){
+    if(chain) return chain;
+    var c = ensureCtx();
+    srcNode = c.createMediaElementSource(audioEl);
+
+    var hp = c.createBiquadFilter();
+    hp.type='highpass'; hp.frequency.value=110;          // fjerner dur og romling
+
+    var klar = c.createBiquadFilter();
+    klar.type='peaking'; klar.frequency.value=2800;      // løfter konsonantene
+    klar.Q.value=0.9; klar.gain.value=8;
+
+    var komp = c.createDynamicsCompressor();             // løfter det svakeste opp
+    komp.threshold.value=-42; komp.knee.value=12;
+    komp.ratio.value=8; komp.attack.value=0.004; komp.release.value=0.22;
+
+    var g = c.createGain(); g.gain.value=5;
+
+    var tak = c.createDynamicsCompressor();              // hindrer overstyring
+    tak.threshold.value=-2; tak.knee.value=0;
+    tak.ratio.value=20; tak.attack.value=0.001; tak.release.value=0.06;
+
+    srcNode.connect(hp); hp.connect(klar); klar.connect(komp);
+    komp.connect(g); g.connect(tak); tak.connect(c.destination);
+
+    chain = {gain:g};
+    return chain;
+  }
+
+  /* ---------- opptak ---------- */
+  var recBtn=document.getElementById('rec'),
+      recSub=document.getElementById('recSub'),
+      playBtn=document.getElementById('play'),
+      hint=document.getElementById('hint'),
+      ringLvl=document.getElementById('ringLvl'),
+      RING=741;
+
+  var recorder=null, biter=[], stream=null, analyser=null, raf=0, klipp=null, stoppTid=0;
+
+  function nivaaLoop(){
+    if(!analyser) return;
+    var buf=new Uint8Array(analyser.fftSize);
+    analyser.getByteTimeDomainData(buf);
+    var sum=0;
+    for(var i=0;i<buf.length;i++){ var v=(buf[i]-128)/128; sum+=v*v; }
+    var rms=Math.sqrt(sum/buf.length);
+    var niv=Math.min(1, Math.pow(rms*7, 0.6));
+    ringLvl.setAttribute('stroke-dashoffset', String(RING - RING*niv));
+    raf=requestAnimationFrame(nivaaLoop);
+  }
+
+  async function startOpptak(){
+    if(!window.isSecureContext || !navigator.mediaDevices){
+      hint.textContent = 'Opptak krever sikker tilkobling. Adressen må begynne med https:// — åpne siden på nytt der.';
+      return;
+    }
+    try{
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio:{ echoCancellation:false, noiseSuppression:false, autoGainControl:true }
+      });
+    }catch(e){
+      hint.textContent = 'Får ikke tilgang til mikrofonen. Åpne Innstillinger → Safari → Mikrofon og tillat den for denne siden.';
+      return;
+    }
+    var c = ensureCtx();
+    var msrc = c.createMediaStreamSource(stream);
+    analyser = c.createAnalyser(); analyser.fftSize=1024;
+    msrc.connect(analyser);
+    nivaaLoop();
+
+    biter=[];
+    try{ recorder = new MediaRecorder(stream); }
+    catch(e){ recorder = new MediaRecorder(stream, {mimeType:'audio/webm'}); }
+    recorder.ondataavailable=function(e){ if(e.data && e.data.size) biter.push(e.data); };
+    recorder.onstop=function(){
+      var blob = new Blob(biter, {type: recorder.mimeType || 'audio/mp4'});
+      if(klipp) URL.revokeObjectURL(klipp);
+      klipp = URL.createObjectURL(blob);
+      audioEl.src = klipp;
+      playBtn.disabled=false;
+      hint.textContent = 'Trykk «Spill av» så mange ganger du trenger. Juster styrke og hastighet mellom hver gang.';
+    };
+    recorder.start();
+
+    recBtn.setAttribute('data-on','');
+    recBtn.firstChild.nodeValue='Stopp';
+    recSub.textContent='tar opp …';
+    stoppTid = setTimeout(stoppOpptak, 45000);
+  }
+
+  function stoppOpptak(){
+    clearTimeout(stoppTid);
+    if(recorder && recorder.state!=='inactive') recorder.stop();
+    if(stream) stream.getTracks().forEach(function(t){ t.stop(); });
+    stream=null; analyser=null;
+    cancelAnimationFrame(raf);
+    ringLvl.setAttribute('stroke-dashoffset', String(RING));
+    recBtn.removeAttribute('data-on');
+    recBtn.firstChild.nodeValue='Ta opp';
+    recSub.textContent='trykk når han snakker';
+  }
+
+  recBtn.addEventListener('click', function(){
+    if(recorder && recorder.state==='recording') stoppOpptak();
+    else startOpptak();
+  });
+
+  /* ---------- avspilling ---------- */
+  var fart=0.8;
+  document.querySelectorAll('#speed button').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('#speed button').forEach(function(o){ o.setAttribute('aria-pressed', String(o===b)); });
+      fart = parseFloat(b.dataset.r);
+      audioEl.playbackRate = fart;
+    });
+  });
+
+  var gainSlider=document.getElementById('gain');
+  gainSlider.addEventListener('input', function(){
+    if(chain) chain.gain.gain.value = parseFloat(gainSlider.value);
+  });
+
+  playBtn.addEventListener('click', function(){
+    if(!audioEl.src) return;
+    var ch = buildChain();
+    ensureCtx();
+    ch.gain.gain.value = parseFloat(gainSlider.value);
+    audioEl.playbackRate = fart;
+    audioEl.preservesPitch = true;
+    audioEl.webkitPreservesPitch = true;
+    audioEl.currentTime = 0;
+    audioEl.play().catch(function(){
+      hint.textContent = 'Fikk ikke spilt av. Sjekk at lyden ikke står på lydløs (sidebryteren).';
+    });
+  });
+
+  /* ---------- skriv ---------- */
+  var boks=document.getElementById('skrivBox');
+  boks.addEventListener('dblclick', function(){ visStort(boks.value.trim()); });
+  ['ja','nesten','nei'].forEach(function(id){
+    var b=document.getElementById(id);
+    b.addEventListener('click', function(){
+      b.setAttribute('data-lit','');
+      setTimeout(function(){ b.removeAttribute('data-lit'); }, 700);
+    });
+  });
+
+  /* ---------- bokstaver ---------- */
+  var felt=document.getElementById('ordfelt');
+  var bokstaver='ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ'.split('');
+  var alfa=document.getElementById('alfabet');
+  bokstaver.forEach(function(ch){
+    var b=document.createElement('button');
+    b.textContent=ch;
+    b.addEventListener('click', function(){ felt.textContent += ch; });
+    alfa.appendChild(b);
+  });
+  [['mellomrom',function(){ felt.textContent += ' '; }],
+   ['slett',function(){ felt.textContent = felt.textContent.slice(0,-1); }],
+   ['tøm',function(){ felt.textContent=''; }]].forEach(function(p){
+    var b=document.createElement('button');
+    b.className='util'; b.textContent=p[0];
+    b.addEventListener('click', p[1]);
+    alfa.appendChild(b);
+  });
+
+  /* ---------- ord ---------- */
+  var tavle={
+    'Kropp':['vondt','trøtt','kald','varm','toalett','svimmel','kløe','puste'],
+    'Mat og drikke':['vann','kaffe','mat','sulten','tørst','saft','tabletter','nok'],
+    'Ting':['briller','telefon','teppe','avis','fjernkontroll','pute','sko','lys'],
+    'Folk':['familien','legen','naboen','ringe','besøk','alene'],
+    'Å gjøre':['opp','legge meg','ut','hjem','vente','hjelp','senere','stopp']
+  };
+  var katBar=document.getElementById('kategorier'), ordGrid=document.getElementById('ordgrid');
+  Object.keys(tavle).forEach(function(k,i){
+    var b=document.createElement('button');
+    b.textContent=k;
+    b.setAttribute('aria-pressed', String(i===0));
+    b.addEventListener('click', function(){
+      katBar.querySelectorAll('button').forEach(function(o){ o.setAttribute('aria-pressed', String(o===b)); });
+      tegnOrd(k);
+    });
+    katBar.appendChild(b);
+  });
+  function tegnOrd(k){
+    ordGrid.innerHTML='';
+    tavle[k].forEach(function(o){
+      var b=document.createElement('button');
+      b.textContent=o;
+      b.addEventListener('click', function(){ visStort(o); });
+      ordGrid.appendChild(b);
+    });
+  }
+  tegnOrd(Object.keys(tavle)[0]);
+
+})();
+</script>
+</body>
+</html>

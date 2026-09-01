@@ -5,15 +5,24 @@ import Base from '../layouts/Base.astro';
   <main>
     <h1>Welcome</h1>
     <nav>
-      <ul>
-        <li><a href="/foggy/">Enter the forest</a></li>
-        <li>
-          <a href="https://www.cameronsworld.net/" target="_blank" rel="noopener noreferrer">
-            Visit an awesome page
-          </a>
-        </li>
-        <li><a href="/blog/">Notes to self</a></li>
-      </ul>
+      <section>
+        <h2>Tools</h2>
+        <ul>
+          <li><a href="/tools/samtalehjelp/index.html">Samtalehjelp</a></li>
+        </ul>
+      </section>
+      <section>
+        <h2>Elsewhere</h2>
+        <ul>
+          <li><a href="/foggy/">Enter the forest</a></li>
+          <li>
+            <a href="https://www.cameronsworld.net/" target="_blank" rel="noopener noreferrer">
+              Visit an awesome page
+            </a>
+          </li>
+          <li><a href="/blog/">Notes to self</a></li>
+        </ul>
+      </section>
     </nav>
   </main>
 </Base>
@@ -34,6 +43,19 @@ import Base from '../layouts/Base.astro';
     letter-spacing: 0.05em;
     line-height: 1.1;
     margin: 0;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+  h2 {
+    font-size: 0.85rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--on-surface-variant);
+    margin: 0 0 1.25rem;
   }
   ul {
     list-style: none;
